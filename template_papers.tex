@@ -6,7 +6,29 @@
 \usepackage{booktabs, cellspace}
 \usepackage[english]{babel} 
 %%%%%%%%%%%%%% Packages: IF YOU NEED TO ADD A PACKAGE, PLEASE DO IT HERE:
-%\usepackage{}
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\usepackage{csquotes}	% Steuerung der Anführungszeichen
+\usepackage[
+backend=bibtex,		% Sortier-Compiler
+style=numeric,		% Zitationsstil
+sorting=none
+]{biblatex}
+
+\addbibresource{ref/ref.bib} 	%Citavi Reference Datei
+\addbibresource{ref/manual.bib}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%% Useful definitions
 \newcommand{\R}{\mathbb R}
 \newcommand{\C}{\mathbb C}
@@ -57,8 +79,14 @@ $\vphantom{i}$ \\[-.25cm]
 
 \hrule
 
-%%%%%%%%%%%%%%%%%%%%%%%%% ADD YOUR CONTRIBUTION BELOW
-%%%%%%%%%%%%%%%%%%%%%%%%% USE SUBSECTION AND SUBSUBSECTION ONLY
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \input{carl}
 
@@ -66,6 +94,6 @@ $\vphantom{i}$ \\[-.25cm]
 
 \input{larysa}
 
-
+\printbibliography %Citavi 5
 
 \end{document}
