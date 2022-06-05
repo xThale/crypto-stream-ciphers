@@ -1,10 +1,10 @@
-\subsection{Security of stream ciphers based on LFSRs}
+\section{Security of stream ciphers based on LFSRs}
 
 To evaluate the usability of encryption methods in real-world problems, multiple factors need to be analyzed, like the ease of implementation, performance and security. Based on the discussed technical realization, a pseudo-random bit stream can be generated. By applying the primitive polynomial to an LFSR, their output always has the largest possible period indifferent to their initial values of the memory cells. This allows for fast encryption of messages with unknown length \cite[p. 181]{Smart.2016}. Further, the next bits of the keystream can be calculated in advance to improve processing speed \cite[p. 3]{Robshaw.1995}. In computer hardware the LFSRs are efficiently implemented with shift registers \cite{Stamp.2007}. These reasons established their wide usage in cryptographic contexts \cite[p. 97]{Pommerening.2000}. For example, real-time audio and video data were encrypted with stream ciphers. Especially since there is no error propagation because if one bit of the stream differs from its correct value, the following bits are not defective \cite[p. 181]{Smart.2016}. Nevertheless, the remaining main concern regarding stream ciphers is their security aspects. 
 
 \pagebreak
 
-\subsubsection{Known-plaintext attack}
+\subsection{Known-plaintext attack}
 
 In cryptanalysis, attacks can be categorized based on the data available to the adversary. Besides the ciphertext-only attacks and chosen-plaintext attacks, there is also the group of known-plaintext attacks. Here, the plaintext and its position of an encrypted sequence are laid open. Because of their linear nature, LFSR-based stream ciphers are prone to these known-plaintext attacks: Given the adversary has a segment of the encrypted message $s$ and the corresponding plaintext $p$, the used keystream $k$ can be reproduced by calculating $s_i \oplus p_i$. This is possible due to the mathematical laws of XOR like $b\;\oplus\;b = 0$ \space and \space $0\;\oplus\;b = b$. The method can be especially abused for metadata like header fields since their structure and content are mostly known \cite[p. 359]{Eckert.2018}. Figure \ref{fig:known-plaintext} illustrates the principle behind a basic known-plaintext attack. \\
 
@@ -46,7 +46,7 @@ If the period of a keystream is shorter than the gained segment of its plaintext
 
 \clearpage
 
-\subsubsection{Linear complexity and the Berlekamp-Massey algorithm}
+\subsection{Linear complexity and the Berlekamp-Massey algorithm}
 
 Besides the period of a sequence, linear complexity is also used as an indicator for the cryptographic usefulness of this sequence. \\
 
@@ -108,7 +108,7 @@ Exploiting a known-plaintext attack, a finite sequence of the keystream can be o
 
 \clearpage
 
-As a demonstration, the LFSR in \note{Figure ?} with characteristic polynomial $G(x) = 1+x+x^4$ is uniquely determined by inputting its bit sequence into the Berlekamp-Massey algorithm. A characteristic polynomial $G(x)$ and connection polynomial $C(x)$ both represent the structure of an LFSR. However, they differ in their written mathematical form. The formula $G(x) = x^L * C(\frac{1}{x})$ describes their relation to each other. The expected output for the demonstration can be calculated by reversing the above equation, resulting in $C(x) = 1+x^3+x^4$. As input, the six-bit deciphered keystream $s=110001$ is used which corresponds to the initial state $s_{12}=12_{(10)}=1100$ of the LFSR. The state and action of each iteration of the loop over the input sequence are presented in Figure \ref{fig:execution-berlekamp-massey}. \\ 
+As a demonstration, the LFSR in Figure \ref{fig:Figure_8} with characteristic polynomial $G(x) = 1+x+x^4$ is uniquely determined by inputting its bit sequence into the Berlekamp-Massey algorithm. A characteristic polynomial $G(x)$ and connection polynomial $C(x)$ both represent the structure of an LFSR. However, they differ in their written mathematical form. The formula $G(x) = x^L * C(\frac{1}{x})$ describes their relation to each other. The expected output for the demonstration can be calculated by reversing the above equation, resulting in $C(x) = 1+x^3+x^4$. As input, the six-bit deciphered keystream $s=110001$ is used which corresponds to the initial state $s_{12}=12_{(10)}=1100$ of the LFSR. The state and action of each iteration of the loop over the input sequence are presented in Figure \ref{fig:execution-berlekamp-massey}. \\ 
 
 \begin{figure}[h]
 	\bgroup

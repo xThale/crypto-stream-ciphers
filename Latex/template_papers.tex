@@ -1,11 +1,16 @@
-\documentclass[a4paper,11pt, twoside]{article}
-
+\documentclass[a4paper,11pt]{article}
+\title{Stream Ciphers: Striving for Randomness}
+\date{2022\\ xth of July}
+\author{Carl Schünemann\\\textit{Student No.}\and Simon Thalmaier\\\textit{Student No.}\and Larysa Bondar\\\textit{Student No.}}
 
 %%%%%%%%%%%%%% Predefined packages
 \usepackage{times,amsmath,eurosym, amssymb, color, graphicx}
 \usepackage{booktabs, cellspace}
 \usepackage[english]{babel} 
 %%%%%%%%%%%%%% Packages: IF YOU NEED TO ADD A PACKAGE, PLEASE DO IT HERE:
+\usepackage{graphicx}
+\usepackage{nccmath}
+\usepackage{svg}
 %%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%
@@ -14,14 +19,14 @@
 \usepackage{csquotes}	% Steuerung der Anführungszeichen
 \usepackage[
 backend=bibtex,		% Sortier-Compiler
-style=numeric,		% Zitationsstil
+style=ieee,		% Zitationsstil
 sorting=none
 ]{biblatex}
 
-\addbibresource{ref.bib} 	%Citavi Reference Datei
+\addbibresource{ref.bib}
 
-\usepackage{nccmath}
-\usepackage{svg}
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%
@@ -64,6 +69,7 @@ sorting=none
 
 
 \begin{document}
+\maketitle
 \thispagestyle{empty}
 
 \hrule
@@ -71,15 +77,15 @@ sorting=none
 $\vphantom{i}$ \\[-.25cm]
 
 
-\section{Stream Ciphers}  
-$\vphantom{i}\hspace{.65cm}$  \textit{Carl Schünemann (cas0597), Larysa Bondar (lab7449), Simon Thalmaier (sit7432) }
+%\section{Stream Ciphers}  
+%$\vphantom{i}\hspace{.65cm}$  \textit{Carl Schünemann (cas0597), Larysa %Bondar (lab7449), Simon Thalmaier (sit7432) }
 
-$\vphantom{i}$ \\[-.25cm]
+%$\vphantom{i}$ \\[-.25cm]
 
 \hrule
 
 \tableofcontents
-
+\newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -94,6 +100,12 @@ $\vphantom{i}$ \\[-.25cm]
 \input{simon}
 
 \input{larysa}
+
+\pagebreak
+
+\listoffigures
+
+\pagebreak
 
 \printbibliography %Citavi 5
 

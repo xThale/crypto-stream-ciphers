@@ -1,0 +1,9 @@
+\section{Introduction}
+
+Random numbers are an important component of modern cryptography. In the case of encryption, they reduce redundancies in encrypted plaintexts, resulting in more secure transmission. \cite[p. 107]{Zhang.2014} The underlying issue is the difficulty of generating random numbers. In his paper \textit{Various Techniques Used in Connection With Random Digits}, John von Neumann already warned in 1951 of this non-trivial task: “Any one who considers arithmetical methods of producing random digits is, of course, in a state of sin.” \cite[p. 36]{vonNeumann1951} A cryptographic system that addresses this challenge is stream ciphers. The generation of random numbers has a central function in this concept. Stream ciphers are used if one symbol is to be encrypted or decrypted per time unit while using minimum resources. \cite[p. 191]{Menezes.2001} \\
+
+This paper presents efforts to approximate randomness with stream ciphers. In particular, the difficulty of this attempt will be illustrated.\\
+
+Initially, the first chapter introduces the central idea of stream ciphers. In the second chapter, the most traditional approach for constructing stream ciphers with shift registers is discussed mathematically. Expanding on this, the third chapter will highlight the difficulties associated with this approach. Efforts to improve this idea and alternative solutions are analyzed in the fourth chapter. Finally, a recent competition is presented in the fifth chapter, aimed at finding out the best of all participating stream ciphers in order to eliminate the previous difficulties.
+
+\pagebreak
