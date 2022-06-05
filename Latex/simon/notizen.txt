@@ -1,0 +1,3 @@
+𝐹2 
+inhomogeneous kth-order linear recurring sequence 
+The preperiod is 𝑛0 = 0.

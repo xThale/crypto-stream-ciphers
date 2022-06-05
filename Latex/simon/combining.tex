@@ -1,2 +1,114 @@
 
-\subsection{Combining multiple LFSRs}
+\subsection{Increasing the cryptographic qualities of LFSRs}
+
+In an attempt to increase the security of LFSRs, several adjustments to their basic structure can be made \cite[p. 97]{Pommerening.2000}. The discussed exploits mainly abuse their linear nature. Therefore, LFSRs can be combined with nonlinear transformations, for example, the multiplication of two bits by an AND function, to diminish their weak points. In this section, a few concepts based on this idea are expanded.
+
+\subsubsection{Nonlinear Feedback Shift Registers (NLFSR)}
+
+Instead of combining the keystream and plaintext linearly, NLFSRs utilize a nonlinear feedback function. This approach seems secure since there are $2^{2^n}$ possible Boolean functions for $n$ bits. However, it is mathematically proven that every bit of a keystream with period $r$ can be correctly determined after at most $r$ bits. For example, the algorithm by Boyar and Krawczyk recursively computes the whole keystream after $n+m$ bits of plaintext, where $n$ is the length of the NLFSR and $m$ is the number of degrees of freedom of the feedback function. The required plaintext is generally much smaller than the period of the NLFSRs. There are even further restrictions that keep reducing their cryptographic values. To still guarantee the effective calculation of the nonlinear function, the amount of tapped cells is limited to a realistic sum. \cite{Pommerening.2015}   \\
+
+In this paper, the usage of pure NLFSRs is not further pursued because they cannot be securely used on their own. \cite[p. 97]{Pommerening.2000}
+
+
+\subsubsection{Combining Linear Feedback Shift Registers with an output generator}
+
+Another solution is to combine the $n$ output bits of multiple LFSRs based on a nonlinear function $f: \mathbb{F}^n_2 \rightarrow \mathbb{F}_2$. A famous representative of this group is the \emph{Geffe generator} which was developed by P.R. Geffe in 1973. It involves two LFSRs, whose outputs $a$ and $b$ are chained together by the nonlinear function $f(a_i,b_i,c_i) = k_i = a_i+c_ia_i+c_ib_i $, where $c$ is produced by a third LFSR. The idea behind a Geffe generator is the selection of the keystream bit $k_i$ based on $c_i$. If $c_i=0$ then $a_i$ is returned, else $b_i$ is chosen. \cite{Handayani.2019} Thus, the combination component is implemented as a \emph{multiplexer} whose index value is $c_i$ \cite[p. 19]{Robshaw.1995}. The three LFSRs can also be of different length. This structure can be seen in Figure \ref{fig:output-selection}. 
+
+\begin{figure}[h]
+	\centering
+	\includesvg[width=0.8\textwidth]{simon/img/output-selection.svg}
+	\caption{Graphic representation of a Geffe generator}
+	\label{fig:output-selection}
+\end{figure}
+
+\newpage
+
+This results in the following change in cryptographic metrics of the output sequence $k$: \cite[p. 234]{Smart.2016}
+
+\[\begin{array}{ll}
+	\text{Linear Complexity }L_k &= \quad L_A + (L_A*L_C) + (L_B*L_C) \\
+	\text{Period }r_k &= \quad (2^{L_A} - 1)*(2^{L_B} - 1)*(2^{L_C} - 1) \\
+\end{array}\]
+
+
+The increase in linear complexity and period improves the quality of the stream cipher. However, the Geffe generator has a statistical weakness that can be exploited. To prove this statement, its truth table is created in Figure \ref{fig:geffe-truth-table}. \\
+
+\begin{figure}[ht]
+	\centering
+	\begin{tabular}{|c|c|c||c|}
+		\hline
+		$a_i$ & $b_i$ & $c_i$ & $k_i$ \\
+		\hline
+		0 & 0 & 0 & 0 \\
+		\hline
+		0 & 0 & 1 & 0 \\
+		\hline
+		0 & 1 & 0 & 0 \\
+		\hline
+		0 & 1 & 1 & 1 \\
+		\hline
+		1 & 0 & 0 & 1 \\
+		\hline
+		1 & 0 & 1 & 0 \\
+		\hline
+		1 & 1 & 0 & 1 \\
+		\hline
+		1 & 1 & 1 & 1 \\
+		\hline
+	\end{tabular}
+	\caption{Truth table of a Geffe generator}
+	\label{fig:geffe-truth-table}
+\end{figure}
+
+
+It can be deducted, that an output bit $k_i$ has the probability $p=\frac{3}{4}$ of being equal to the bit $a_i$ of LFSR A. The same can be seen for LFSR B. Consequently, the Geffe generator can be easily broken with a correlation attack \cite[p. 104]{Pommerening.2000}. \\ 
+
+A correlation attack is a brute-force plaintext attack in which the correlation between the final output keystream and the generated sequence of one of the LFSRs is exploited. First, a random initial state for LFSR A is produced. The resulting output of the system based on this guessed state is compared to the actual output stream. If the state is correct, then they should be equal in approximately $\frac{3}{4}$ths of their bits. If so, the next step is to calculate the initial state of LFSR B and afterwards repeated for LFSR C. The problem of estimating the initial states of all LFSRs at once is divided into determining only one at a time. This attack pattern is also called a divide-and-conquer attack. \cite[p. 17]{Robshaw.1995} Without this approach the brute-force method requires roughly '$2^{L_A + L_B + L_C}$ times the total number of possible connection polynomials' operations to guess the three initial states. The first part of the equation is reduced to $2^{L_A}+2^{L_B}+2^{L_C}$, due to the separated calculation of the initial state by the divide-and-conquer pattern. The probability of guessing the correct states for all LFSRs amplifies drastically. \cite[p. 235]{Smart.2016} \\
+
+To measure the qualities of a cipher concerning correlation attacks, a new term was introduced. A function is $m^{th}$-order correlation-immune when any subset of $m$ input bits are uncorrelated to the output bit \cite[p. 777]{Siegenthaler.1984}. In the case of a Geffe generator, the function is of 1st-order correlation-immune, since only the sequence of LFSR C has no influence on the output bits. Interestingly, high linear complexity $L$ of the combination function results in low correlation-immunity $m$ \cite[p. 779]{Siegenthaler.1984}. 
+
+
+\subsubsection{Extending nonlinear output generators with memory cells}
+
+To counter the undesired effect between linear complexity and correlation-immunity, the combination function can be expanded with a memory component to achieve maximum linear complexity and correlation-immunity at the same time \cite[p. 17]{Robshaw.1995}. The addition of memory turns the system into a nonlinear finite state machine \cite[p. 209]{Wu.2008}. The combination function $f$ is modified to not only produce the output bit $k$ but also the next state of the machine $\sigma$. \\ 
+
+The \emph{summation combiner} uses this principle and allows for maximum linear complexity and correlation-immunity \cite[p. 261]{Rueppel.1986b}. The generated bits from two LFSRs are added together every tact and the resulting carry $\sigma$ is saved in an one-bit memory, similar to an integer addition. This method proves to be highly nonlinear. The general structure is illustrated in Figure \ref{fig:summation-combiner}. \cite[p. 70]{Meier.1992} \\
+
+\begin{figure}[htbp]
+	\centering
+	\includesvg[width=0.4\textwidth]{simon/img/summation-combiner.svg}
+	\caption{Basic overview of a summation combiner with two input LFSRs}
+	\label{fig:summation-combiner}
+\end{figure}
+
+\vspace{0,7cm}
+
+Its combination functions are defined as:
+
+\[\def\arraystretch{1.4}\begin{array}{llll}
+	f_k(a_i, b_i): & k_i &= \quad a_i \oplus b_i \oplus \sigma_{i-1} &:= \text{keystream bit}\\
+	f_\sigma(a_i, b_i): & \sigma_{i} &= \quad a_ib_i \oplus a_i\sigma_{i-1} \oplus b_i\sigma_{i-1} &:= \text{carry}\\
+\end{array}\]
+
+\vspace{0,4cm}
+
+The summation combiner accomplishes improvements in regards to the period $r_k$ and linear complexity $L_k$ of the produced keystream $k$. The period $r_k$ is equal to $r_a*r_b$ for a integer addition of two sequences $a$ and $b$ with their corresponding periods $r_a, r_b$ assuming $gcd(r_a,r_b)=1$ \cite[p. 220]{Rueppel.1986}. Also the gained linear complexity $L_k$ is generally close to the period $r_k$ with $L_k \leq r_a*r_b$ \cite[p. 225]{Rueppel.1986}. In terms of the correlation between the state and its output, it still shows a slight bias which can be exploited by a correlation attack. This bias can be decreased by adding more LFSRs as input for the integer addition and increasing its memory \cite[pp. 81-82]{Meier.1992}. \\
+
+\subsubsection{Clock-Controlled Linear Feedback Shift Registers}
+
+Until this point in the paper, all registers were shifted on every clock tick. A different idea for refining the security characteristics of LFSRs is changing their tick rate based on the output of another register. This introduces a nonlinear nature to the keystream. The \emph{Stop-and-Go generator} for example has two LFSRs $A$ and $B$ with their output $a_i$ and $b_i$. The clock signal $c_i$ is AND-combined with $b_i$ before being connected to the LFSR A, so that the register is only shifted if $b_i=1$. As long as $(b_i, b_{i+1}, ..., b_{i+n}) = (0,0,...,0)$ the generator produces the unchanged bit $a_i$. \cite[pp. 89-90]{Beth.1985b} Since the Stop-and-Go generator suffers from a high correlation between $b_i$ and a switch in the bits of the keystream, it is prone to correlation attacks \cite[p. 156]{Klein.2013}. An improvement to this concept is the \emph{shrinking generator}. Instead of outputting the same bit if $b_i=0$, the LFSR A is shifted regardless but nothing is added to the keystream. This restricts the threat of correlation attacks \cite[p. 159]{Klein.2013}. Even though the input clock signal is not directly tampered with, the shrinking generator counts towards the group of the clock-controlled stream ciphers \cite[p. 23]{Robshaw.1995}. In Figure \ref{fig:clocked-generators} the general structures of both generators are shown.
+
+\begin{figure}[htpb]
+	\centering
+	\small
+	\includesvg[width=0.95\textwidth]{simon/img/clocked-generators.svg}
+	\caption{The Stop-and-Go \cite[pp. 89-90]{Beth.1985b} and shrinking generator \cite[p. 159]{Klein.2013}}
+	\label{fig:clocked-generators}
+\end{figure}
+
+Let LFSR A have a maximal period of $r_A=2^{L_A}-1$ with linear complexity $L_A$ and LFSR B has accordingly period $r_B=2^{L_B}-1$ with linear complexity $L_B$. On the condition that $L_A$ and $L_B$ are relative prime, meaning $gcd(L_A, L_B)=1$, the period $r_k$ of the output keystream $k$ is equal to $r_k\;=\;2^{L_B-1}*r_A\;=\;2^{L_B-1}*(2^{L_A}-1)\;$ \cite[p. 25]{coppersmith1993shrinking}\cite[p. 159]{Klein.2013}. Furthermore, the linear complexity of the output keystream $L_k$ can be described as: \space $L_A*2^{L_B-2} \;<\; L_k \;\leq\; L_A*2^{L_A-1}$ \cite[p. 25]{coppersmith1993shrinking}. 
+
+Because the shrinking generator only sends bits if $b_i=1$, the time between the consecutive bits $k_i$ and $k_{i+1}$ can be measured. The stream of LFSR B can then be immediately reconstructed. These \emph{timing attacks} are a specific variant of so called \emph{side-channel attacks}. To lower the possibility of such attacks, dummy operations can be implemented or the actual bit $b_i$ can be hidden by caching the output stream. \cite[pp. 163-164]{Klein.2013} \\\\
+
+The metrics to measure the cryptographic applicability of stream ciphers such as their period, linear complexity and correlation-immunity only indicate required properties to guarantee minimal security not their actual real-world usability \cite[p. 24]{coppersmith1993shrinking}. Over time a lot of stream ciphers have been cracked. For them to be reliable even today, more adjustments need to be made.
+
