@@ -167,7 +167,7 @@ In this section, we would like to show the functionality of a stream cipher on t
 	\item Trivium scored very highly at the SASC 2008 evaluation.
 \end{enumerate}
 
-\subsection*{Functionality}
+\subsection{Functionality}
 
 Trivium consists of the following phases \cite{canniere2008trivium}:
 \begin{enumerate}
@@ -315,7 +315,7 @@ To better understand the algorithm, consider this example:
 	}
 \end{enumerate}
 
-\subsection*{Security}
+\subsection{Security}
 According to the authors of the cipher \cite{canniere2008trivium}, it is harder to find \emph{correlations} between the internal state bits and the keystream in Trivium because as opposed to LFSR based ciphers, Trivium's state register is updated in a non-linear way, so it is harder for an attacker to recover the state.\\
 The non-linear nature of the cipher makes it nearly immune to the attacks that rely on determining its \emph{period} as well as \emph{algebraic attacks}. \emph{Resynchronization attacks} are avoided by cycling the state four times (step 4 in the example above) before producing any output. The authors name \emph{Guess and Determine attacks} as the ones of the most concern.\\
 In 2013 another team of researchers has shown that Trivium can be broken by a \emph{cube attack}, if the number of initialization rounds is reduced to 799 \cite{fouque2013improving}. 
