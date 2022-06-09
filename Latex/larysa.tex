@@ -93,12 +93,12 @@
 		\begin{figure}[h]
 			
 			\begin{subfigure}{0.5\textwidth}
-				\includegraphics[width=1\textwidth]{rabbit.png} 
+				\includegraphics[width=1\textwidth]{img/rabbit.png} 
 				\caption{Internal structure of the Rabbit cipher}
 				\label{fig:rabbit}
 			\end{subfigure}
 			\begin{subfigure}{0.5\textwidth}
-				\includegraphics[width=1\textwidth]{salsa20.png} 
+				\includegraphics[width=1\textwidth]{img/salsa20.png} 
 				\caption{Internal structure of the Salsa20/r ciphe}
 				\label{fig:salsa20}
 			\end{subfigure}
@@ -110,41 +110,41 @@
 		\emph{Rabbit} is a software-efficient, synchronous stream cipher that uses a 128-bit key and a 64-bit IV. A set of eight state registers, each 32-bit long and eight 32-bit counters are used to provide encryption based on ARX operations. Testing during the eSTREAM process confirmed that the Rabbit cipher was one of the most efficient software-oriented stream ciphers submitted \cite{boesgaard2008rabbit}.\\
 		\emph{Salsa20/r} is a software-oriented cipher that supports keys of 128 bits and 256 bits. During its operation, the key, a 64-bit nonce (unique message number), a 64-bit counter, and four 32-bit constants are mapped to the 512-bit initial state. After r iterations of the Salsa20/r round function, the updated state is used as a 512-bit keystream output. Due to its implementation Salsa20 resembles a block cipher \cite{bernstein2008salsa20}.
 		Although many attacks on Rabbit and Salsa20 have been proposed, as of 2015, none of them have been more successful than brute force attacks. 
-		\item [NFSR-based] stream ciphers take NFSR as the basic components. It uses both the nonlinear feedback and the nonlinear output to provide good sequence properties and security \cite{jiao2020stream}. 
-		Among the eStream finalists, Trivium and Grain v1 belong to NFSR-based ciphers.
+		\item [NLFSR-based] stream ciphers take NLFSR as the basic components. It uses both the nonlinear feedback and the nonlinear output to provide good sequence properties and security \cite{jiao2020stream}. 
+		Among the eStream finalists, Trivium and Grain v1 belong to NLFSR-based ciphers.
 		
 		\begin{figure}[h]
 			
 			\begin{subfigure}{0.5\textwidth}
-				\includegraphics[width=1\textwidth]{trivium.png} 
+				\includegraphics[width=1\textwidth]{img/trivium.png} 
 				\caption{Internal structure of the Trivium cipher}
 				\label{fig:trivium}
 			\end{subfigure}
 			\begin{subfigure}{0.5\textwidth}
-				\includegraphics[width=1\textwidth]{grainv1.png} 
+				\includegraphics[width=1\textwidth]{img/grainv1.png} 
 				\caption{Internal structure of the Grain v1 cipher}
 				\label{fig:grainv1}
 			\end{subfigure}
 			
-			\caption{NFSR-based eStream finalists}
-			\label{fig:nfsr}
+			\caption{NLFSR-based eStream finalists}
+			\label{fig:NLFSR}
 			
 		\end{figure}
 		
-		\emph{Trivium} is a hardware-oriented stream cipher the main advantage of which is its simple design. It consists of three interconnected NFSRs with feedback functions and linear or quadratic filter functions. It takes an 80-bit key and an 80-bit IV, and generates up to 264 keystream bits. It is important to note that Trivium was designed as an exercise, to explore how far a stream cipher can be simplified without sacrificing its security, speed or flexibility and still outperform AES \cite{canniere2008trivium}.\\
-		\emph{Grain v1} combines the LFSR with the NFSR, where LFSR provides good statistical characteristics and NFSR adds nonlinear disturbance. A filter function is used to mix the state from both registers to further improve the security. It takes an 80-bit key and an 80-bit IV, using the LFSR and NFSR each of 80-bit length, and a filter function of 5 variables and algebraic degree 3 \cite{hell2007grain}. A 2003 paper described a possible weakness in the cipher initialization \cite{kuccuk2006slide}. As of October 2006, no key recovery attacks better than brute force attacks are known against Grain v1.
+		\emph{Trivium} is a hardware-oriented stream cipher the main advantage of which is its simple design. It consists of three interconnected NLFSRs with feedback functions and linear or quadratic filter functions. It takes an 80-bit key and an 80-bit IV, and generates up to 264 keystream bits. It is important to note that Trivium was designed as an exercise, to explore how far a stream cipher can be simplified without sacrificing its security, speed or flexibility and still outperform AES \cite{canniere2008trivium}.\\
+		\emph{Grain v1} combines the LFSR with the NLFSR, where LFSR provides good statistical characteristics and NLFSR adds nonlinear disturbance. A filter function is used to mix the state from both registers to further improve the security. It takes an 80-bit key and an 80-bit IV, using the LFSR and NLFSR each of 80-bit length, and a filter function of 5 variables and algebraic degree 3 \cite{hell2007grain}. A 2003 paper described a possible weakness in the cipher initialization \cite{kuccuk2006slide}. As of October 2006, no key recovery attacks better than brute force attacks are known against Grain v1.
 		
 		\item [LFSR-based] stream ciphers can be either bit-oriented (driven by one or more bit-unit LFSRs for a large cycle and good statistical properties, and usually combined with means of a filter, combiner, or clock control to realize the nonlinearly scrambling \cite{jiao2020stream}) or word-oriented (consists of the linear driver infinite field extension and a non-linear finite state machine (FSM), which can be regarded as a generalization of filter generators \cite{jiao2020stream}).
 		
 		\begin{figure}[h]
 			
 			\begin{subfigure}{0.5\textwidth}
-				\includegraphics[width=1\textwidth]{mickeyv2.png} 
+				\includegraphics[width=1\textwidth]{img/mickeyv2.png} 
 				\caption{Internal structure of the MICKEY v2 ciphe}
 				\label{fig:mickeyv2}
 			\end{subfigure}
 			\begin{subfigure}{0.5\textwidth}
-				\includegraphics[width=1\textwidth]{SOSEMANUK.png} 
+				\includegraphics[width=1\textwidth]{img/SOSEMANUK.png} 
 				\caption{Internal structure of the SOSEMANUK cipher}
 				\label{fig:sosemanuk}
 			\end{subfigure}
