@@ -1,6 +1,6 @@
-\section{Security of stream ciphers based on LFSRs}
+\section{Security of Stream Ciphers based on LFSRs}
 
-To evaluate the usability of encryption methods in a real-world environment, multiple factors need to be analyzed, like the ease of implementation, performance and security. Based on the discussed technical realization, a pseudo-random bit stream can be generated. In computer hardware stream ciphers are efficiently implemented with shift registers \cite{Stamp.2007}. To further improve the processing speed of stream ciphers the next bits of the keystream can be calculated in advance \cite[p. 3]{Robshaw.1995}. Once data is received, it is XOR-combined with the keystream to en- or decrypt the data. By applying the primitive polynomial to an LFSR, their output always has the largest possible period indifferent to their initial values of the memory cells. Because the keystream is periodic and therefore infinite, messages with unknown length like real-time audio and video data are generally encrypted this way \cite[p. 181]{Smart.2016}. Especially since there is no error propagation. If one bit of the encrypted message differs from its correct value, the following bits are not defective and can still be deciphered properly \cite[p. 181]{Smart.2016}. These reasons established their wide usage in cryptographic contexts \cite[p. 97]{Pommerening.2000}. However, stream ciphers also need to be considered cryptographically secure in order to be useful as an encryption tool. The next chapters demonstrate different attacks on stream ciphers and improvements to their security aspects.
+To evaluate the usability of encryption methods in a real-world environment, multiple factors need to be analyzed, like the ease of implementation, performance and security. Based on the discussed technical realization, a pseudo-random bit stream can be generated. In computer hardware stream ciphers are efficiently implemented with shift registers \cite{Stamp.2007}. To further improve their processing speed the next bits of the keystream can be calculated in advance \cite[p. 3]{Robshaw.1995}. Once data is received, it is XOR-combined with the keystream to en- or decrypt the data. By applying the primitive polynomial to an LFSR, their output always has the largest possible period indifferent to the initial values of the memory cells. Because the keystream is periodic and therefore infinite, messages with unknown length like real-time audio and video data are generally encrypted this way \cite[p. 181]{Smart.2016}. Especially since there is no error propagation. If one bit of the encrypted message differs from its correct value, the following bits are not defective and can still be deciphered properly \cite[p. 181]{Smart.2016}. These reasons established their wide usage in cryptographic contexts \cite[p. 97]{Pommerening.2000}. However, stream ciphers also need to be considered cryptographically secure in order to be useful as an encryption tool. The next chapters demonstrate different attacks on stream ciphers and introduce improvements to their security aspects.
 
 
 \subsection{Known Plaintext Attack}
@@ -45,7 +45,7 @@ If the period of a keystream is shorter than the gained segment of its plaintext
 
 \subsection{Linear Complexity and the Berlekamp-Massey Algorithm}
 
-Besides the period of a sequence, its \emph{linear complexity} is also used as an indicator for the cryptographic usefulness of the sequence. \\
+Besides the period of a sequence, its \emph{linear complexity} is also used as an indicator for the cryptographic usefulness of the keystream. \\
 
 \textbf{Definition}: The linear complexity $L(s)$ of a finite binary sequence $s$ is equal to the length and therefore degree of the shortest LFSR to generate $s$ \cite[p. 233]{Smart.2016}. $L$ follows the properties \cite[pp. 20-21]{Cusick.2009}:\\
 
@@ -61,11 +61,12 @@ Besides the period of a sequence, its \emph{linear complexity} is also used as a
 \end{tabular}
 \egroup
 \\\\\\
-The \emph{Berlekamp-Massey algorithm} presented in the paper ‘Shift-register synthesis and BCH decoding’ can be used to calculate the linear complexity of a sequence and its corresponding shortest LFSR. Given a primitive polynomial has degree $n$ and consequently, its generated period has linear complexity $L$, if an adversary gains a keystream segment $k$ with length $l \geq 2L$, the primitive polynomial can be determined \cite[pp. 124-125]{Massey.1969}. With this information, the used LFSR can be recreated and the full keystream can be acquired \cite[p. 232]{Smart.2016}. Hence, the linear complexity is directly connected to the required keystream sequence to crack a stream cipher. \\
+The \emph{Berlekamp-Massey algorithm} presented in the paper ‘Shift-register synthesis and BCH decoding’ can be used to calculate the linear complexity of a sequence and its corresponding shortest LFSR. Given a primitive polynomial has degree $n$ and its generated period has linear complexity $L$. If an adversary gains a keystream segment $k$ with length $l \geq 2L$, the primitive polynomial can be determined \cite[pp. 124-125]{Massey.1969}. With this information, the used LFSR can be recreated and the periodic keystream can be acquired \cite[p. 232]{Smart.2016}. Hence, the linear complexity is directly connected to the required bits of the keystream to crack a stream cipher. \\
 
 After obtaining a finite keystream snippet $k$ by for example exploiting a known plaintext attack, it can be used as the input for the Berlekamp-Massey algorithm. The algorithm has an efficient linear run time of $O(n)$ for a sequence with length $n$. Its structure is displayed in Figure \ref{fig:berlekamp-massey}.  \\
 
 \begin{figure}[ht]
+	\vspace{0.3cm}
 	
 	\[\begin{array}{lll}
 		& k &= (k_0, k_1, ..., k_n) \in \mathbb{F}_2 := \text{keystream sequence of the LFSR and input for the algorithm}\\
@@ -73,8 +74,8 @@ After obtaining a finite keystream snippet $k$ by for example exploiting a known
 		& i &:= \text{current index of the input sequence}\\
 		& i' &:= \text{previous index since the last increment of the linear complexity}\\
 		& C(x) & = 1 + c_1x^1 + c_2x^2 + ... + c_ix^i \text{ (mod 2)} \\
-		& & := \text{feedback connection polynomial of the minimal LFSR generating } s\\
-		& c_i &:= \text{if tapped:} c_i = 1 \text{else} c_i = 0 \\
+		& & := \text{feedback connection polynomial of the minimal LFSR generating } k\\
+		& c_i &:= \text{a cell of the shift register. If tapped: \space} c_i = 1 \text{ \space else \space } c_i = 0 \\
 		& B(x) &:= \text{previous connection polynomial since the last increment of the linear complexity}\\
 		& L &:= \text{linear complexity of the minimal LFSR}\\
 		& d &:= \text{discrepancy between the input and the output generated by } C(x)\\
@@ -104,7 +105,7 @@ After obtaining a finite keystream snippet $k$ by for example exploiting a known
 
 \clearpage
 
-As a demonstration, the LFSR in Figure \ref{fig:Figure_8} with a characteristic polynomial $G(x) = 1+x+x^4$ is uniquely determined by inputting its bit sequence into the Berlekamp-Massey algorithm. A characteristic polynomial $G(x)$ and connection polynomial $C(x)$ both represent the structure of an LFSR. However, they differ in their written mathematical form. The formula $G(x) = x^L * C(\frac{1}{x})$ describes their relation to each other. The expected output for the demonstration can be calculated by reversing the above equation, resulting in $C(x) = 1+x^3+x^4$. As input, the six-bit deciphered keystream $k=110001$ is used which corresponds to the initial state $IV_{12}=12_{(10)}=1100$ of the LFSR. The state and action of each iteration of the loop over the input sequence are presented in Figure \ref{fig:execution-berlekamp-massey}. \\ 
+As a demonstration, the LFSR in Figure \ref{fig:Figure_8} with a characteristic polynomial $G(x) = 1+x+x^4$ is uniquely determined by inputting its output bit sequence into the Berlekamp-Massey algorithm. A characteristic polynomial $G(x)$ and connection polynomial $C(x)$ both represent the structure of an LFSR. However, they differ in their written mathematical form. Since the algorithm produces $C(x)$ the formula $G(x) = x^L * C(\frac{1}{x})$ is used to convert the polynomials. The expected output for the demonstration can be calculated by reversing the above equation, resulting in $C(x) = 1+x^3+x^4$. As input, the six-bit deciphered keystream segment $k=110001$ is inserted which corresponds to the initial state $IV_{12}=12_{(10)}=1100$ of the register cells. The state and applied actions of each loop iteration over the input sequence are presented in Figure \ref{fig:execution-berlekamp-massey}. \\ 
 
 \begin{figure}[h]
 	\bgroup
@@ -145,7 +146,7 @@ As a demonstration, the LFSR in Figure \ref{fig:Figure_8} with a characteristic 
 	\label{fig:execution-berlekamp-massey}
 \end{figure}
 
-To validate the gained connection polynomial, it is inserted into the equation $G(x) = x^L * C(\frac{1}{x}) = x^4 * (1 + \frac{1}{x^3} + \frac{1}{x^4}) = x^4 + x + 1$. The expected output was indeed computed correctly by the algorithm after six iterations. In the example, the adversary knew only six bits and recreated the LFSR successfully. In this case, she would have required at most $2*L=2*4=8$ bits for the algorithm to determine the correct connection polynomial. This can also be achieved with an equation as long as the length of the LFSR is known. To calculate which memory cells $c_i$ are tapped, the following formula can be used \cite[p. 232]{Smart.2016}:
+To validate the gained connection polynomial again, it is inserted into the equation $G(x) = x^L * C(\frac{1}{x}) = x^4 * (1 + \frac{1}{x^3} + \frac{1}{x^4}) = x^4 + x + 1$. The expected output was indeed computed correctly by the algorithm after six iterations. In the example, the adversary knew only six bits and recreated the LFSR successfully. In this case, she would have required at most $2*L=2*4=8$ bits for the algorithm to determine the connection polynomial. Alternatively, this can also be achieved with an equation as long as the length of the LFSR is known. To calculate which memory cells $c_i$ are tapped, the following formula can be used \cite[p. 232]{Smart.2016}:
 
 \[
 	\begin{pmatrix}
