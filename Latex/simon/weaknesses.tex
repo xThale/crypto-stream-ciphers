@@ -1,54 +1,51 @@
 \section{Security of stream ciphers based on LFSRs}
 
-To evaluate the usability of encryption methods in real-world problems, multiple factors need to be analyzed, like the ease of implementation, performance and security. Based on the discussed technical realization, a pseudo-random bit stream can be generated. By applying the primitive polynomial to an LFSR, their output always has the largest possible period indifferent to their initial values of the memory cells. This allows for fast encryption of messages with unknown length \cite[p. 181]{Smart.2016}. Further, the next bits of the keystream can be calculated in advance to improve processing speed \cite[p. 3]{Robshaw.1995}. In computer hardware the LFSRs are efficiently implemented with shift registers \cite{Stamp.2007}. These reasons established their wide usage in cryptographic contexts \cite[p. 97]{Pommerening.2000}. For example, real-time audio and video data were encrypted with stream ciphers. Especially since there is no error propagation because if one bit of the stream differs from its correct value, the following bits are not defective \cite[p. 181]{Smart.2016}. Nevertheless, the remaining main concern regarding stream ciphers is their security aspects. 
+To evaluate the usability of encryption methods in a real-world environment, multiple factors need to be analyzed, like the ease of implementation, performance and security. Based on the discussed technical realization, a pseudo-random bit stream can be generated. In computer hardware stream ciphers are efficiently implemented with shift registers \cite{Stamp.2007}. To further improve the processing speed of stream ciphers the next bits of the keystream can be calculated in advance \cite[p. 3]{Robshaw.1995}. Once data is received, it is XOR-combined with the keystream to en- or decrypt the data. By applying the primitive polynomial to an LFSR, their output always has the largest possible period indifferent to their initial values of the memory cells. Because the keystream is periodic and therefore infinite, messages with unknown length like real-time audio and video data are generally encrypted this way \cite[p. 181]{Smart.2016}. Especially since there is no error propagation. If one bit of the encrypted message differs from its correct value, the following bits are not defective and can still be deciphered properly \cite[p. 181]{Smart.2016}. These reasons established their wide usage in cryptographic contexts \cite[p. 97]{Pommerening.2000}. However, stream ciphers also need to be considered cryptographically secure in order to be useful as an encryption tool. The next chapters demonstrate different attacks on stream ciphers and improvements to their security aspects.
 
-\pagebreak
 
-\subsection{Known-plaintext attack}
+\subsection{Known Plaintext Attack}
 
-In cryptanalysis, attacks can be categorized based on the data available to the adversary. Besides the ciphertext-only attacks and chosen-plaintext attacks, there is also the group of known-plaintext attacks. Here, the plaintext and its position of an encrypted sequence are laid open. Because of their linear nature, LFSR-based stream ciphers are prone to these known-plaintext attacks: Given the adversary has a segment of the encrypted message $s$ and the corresponding plaintext $p$, the used keystream $k$ can be reproduced by calculating $s_i \oplus p_i$. This is possible due to the mathematical laws of XOR like $b\;\oplus\;b = 0$ \space and \space $0\;\oplus\;b = b$. The method can be especially abused for metadata like header fields since their structure and content are mostly known \cite[p. 359]{Eckert.2018}. Figure \ref{fig:known-plaintext} illustrates the principle behind a basic known-plaintext attack. \\
+In cryptanalysis, attacks can be categorized based on the data available to the adversary. Besides the ciphertext only attacks and chosen plaintext attacks, there is also the group of \emph{known plaintext attacks}. Here, the plaintext of an encrypted sequence and its location in the message are laid open. \cite[p. 2-3]{Stamp.2007} Because of their linear nature, LFSR-based stream ciphers are prone to these known plaintext attacks \cite[p. 233]{Smart.2016}: Given the adversary has a segment $s$ of the encrypted message and the corresponding plaintext $p$, the used keystream $k$ can be reproduced by calculating $s_i \oplus p_i$. This is possible due to the mathematical properties of XOR like $b\;\oplus\;b = 0$ \space and \space $0\;\oplus\;b = b$. The method can be especially abused for metadata like header fields since their structure and content are mostly known \cite[p. 359]{Eckert.2018}. Figure \ref{fig:known-plaintext} illustrates the principle behind a basic known plaintext attack. \\
 
 \begin{figure}[htpb]
 	\[\def\arraystretch{1.4}\begin{array}{llll}
 		\text{\it{Given:}}& s &= (s_0, s_1, ..., s_n) \in \mathbb{F}_2 &:= \text{encrypted\ message}\\
 		&p &= (p_0, p_1, ..., p_n) \in \mathbb{F}_2 &:= \text{plaintext}\\
 		&k &= (k_0, k_1, ..., k_n) \in \mathbb{F}_2 &:= \text{keystream}\\
-		&f(p_i, k_i) &= k_i \oplus p_i = s_i &:= \text{encryption function}\vspace{0,6cm}\\
+		&f(k_i, p_i) &= k_i \oplus p_i = s_i &:= \text{encryption function}\vspace{0,6cm}\\
 		
 		\text{\it{Attack:}}& \multicolumn{3}{c}{s_i \oplus p_i = (k_i \oplus p_i) \oplus p_i = k_i \oplus 0 = k_i}\\
 	\end{array}\]
-	\caption{Basic known-plaintext attack on a stream cipher}
+	\caption{Basic known plaintext attack on a stream cipher}
 	\label{fig:known-plaintext}
 \end{figure}
 
-
-If the period of a keystream is shorter than the gained segment of its plaintext, then the rest of the message can be decrypted \cite[p. 9]{Rueppel.1986}. Therefore, a large period is necessary to diminish this threat \cite[p. 83]{Stamp.2007}. Even if it is not possible for the adversary to recreate the complete keystream period, the original data $p$ can be replaced by malicious content $p'$ of the same length. To demonstrate this, it is assumed that the position of the plaintext '10.000€' and its corresponding encrypted message $s$ is known. The first digit is now replaced by a '9' in Figure \ref{fig:text-replacment}. This is a clear security concern.
+If the period of a keystream is shorter than the gained segment of its plaintext, then the rest of the message can be decrypted \cite[p. 9]{Rueppel.1986}. Therefore, a large period is necessary to diminish this threat \cite[p. 83]{Stamp.2007}. Even if it is not possible for the adversary to recreate the complete keystream period, the original data $p$ can be replaced by malicious content $p'$ of the same length. This is also known as a bit-flipping attack \cite[p. 6]{graves2010ceh}. To visualize such an attack, it is assumed that the position of the plaintext '10.000€' and its corresponding encrypted message $s$ is known. The first digit is now replaced by a '9' in Figure \ref{fig:text-replacment}. This is a clear security concern.
 
 \begin{figure}[htpb]
 	\[\begin{array}{ll}
 		\multicolumn{2}{l}{\text{\it Sender (sends $s$):}}\\
 		\multicolumn{2}{l}{p = 0000 0001_{(2)} = 1_{(10)}}\\
 		\multicolumn{2}{l}{k = 1011 1110_{(2)}}\\
-		\multicolumn{2}{l}{s = k \oplus p = 1011 1110 \oplus 0000 0001 = 1011 0101}\\
+		\multicolumn{2}{l}{s = k \oplus p = 1011 1110 \oplus 0000 0001 = 1011 1111}\\
 		\\
 		\multicolumn{2}{l}{\text{\it Adversary (receives $s$, knows $p$ and sends $s'$):}}\\
-		p' &= 0000 1010_{(2)} = 9_{(10)}\\
-		k \oplus p' &= s \oplus p \oplus p'\\
-		&= 1011 0101 \oplus 0000 00001 \oplus 0000 1010  \\
-		&= 1011 0100 \oplus 0000 1010 = 1011 1110 = s'\\
+		p' &= 0000 1001_{(2)} = 9_{(10)}\\
+		s \oplus p \oplus p' &= 1011 1111 \oplus 0000 00001 \oplus 0000 1001 \\
+		&= 1011 1110 \oplus 0000 1001 = k \oplus p' \\
+		&= 1011 0111 = s' \\
 		\\
 		\multicolumn{2}{l}{\text{\it Receiver (receives $s'$):}}\\
-		\multicolumn{2}{l}{k \oplus s' = 1011 1110 \oplus 10111 0101 = 0000 1001 =  9_{(10)}}
+		\multicolumn{2}{l}{k \oplus s' = 1011 1110 \oplus 1011 0111 = 0000 1001 =  9_{(10)}}
 	\end{array}\]
-	\caption{Replacing original data with modified text in a known-plaintext attack }
+	\caption{Replacing original data with modified text in a known plaintext attack }
 	\label{fig:text-replacment}
 \end{figure}
 
-\clearpage
 
-\subsection{Linear complexity and the Berlekamp-Massey algorithm}
+\subsection{Linear Complexity and the Berlekamp-Massey Algorithm}
 
-Besides the period of a sequence, linear complexity is also used as an indicator for the cryptographic usefulness of this sequence. \\
+Besides the period of a sequence, its \emph{linear complexity} is also used as an indicator for the cryptographic usefulness of the sequence. \\
 
 \textbf{Definition}: The linear complexity $L(s)$ of a finite binary sequence $s$ is equal to the length and therefore degree of the shortest LFSR to generate $s$ \cite[p. 233]{Smart.2016}. $L$ follows the properties \cite[pp. 20-21]{Cusick.2009}:\\
 
@@ -56,7 +53,6 @@ Besides the period of a sequence, linear complexity is also used as an indicator
 \def\arraystretch{1.2}
 \begin{tabular}{lllll}
 	&$\bullet$&$s$ is the zero sequence with $(0, 0, ..., 0)$ & $\logeq$ & $L(s)=0$ \\
-	&$\bullet$& $s$ is the zero sequence with $(0, 0, ..., 0)$& $\logeq$ & $L(s)=0$   \\
 	&$\bullet$& $s$ has length $n$ with format $(0, 0, ..., 1)$ & $\logeq$ & $L(s) = n$\\
 	&$\bullet$& $s$ cannot be generated by an LFSR  & $\logright$ & $ L(s) = \infty$\\
 	&$\bullet$&  $s$ is periodic with period $r$ & $\logright$ & $L(s) \leq  r$\\
@@ -65,14 +61,14 @@ Besides the period of a sequence, linear complexity is also used as an indicator
 \end{tabular}
 \egroup
 \\\\\\
-The Berlekamp-Massey algorithm presented in the paper ‘Shift-register synthesis and BCH decoding’ can be used to calculate the linear complexity of a sequence and its corresponding shortest LFSR. Given a primitive polynomial has degree $n$ and consequently, its generated period has linear complexity of $L$, if an adversary gains a sequence of the keystream $k \geq 2L$, the primitive polynomial can be determined \cite[pp. 124-125]{Massey.1969}. The used LFSR can then be successfully asserted. So the linear complexity is directly connected to the required keystream sequence to crack the stream cipher. \\
+The \emph{Berlekamp-Massey algorithm} presented in the paper ‘Shift-register synthesis and BCH decoding’ can be used to calculate the linear complexity of a sequence and its corresponding shortest LFSR. Given a primitive polynomial has degree $n$ and consequently, its generated period has linear complexity $L$, if an adversary gains a keystream segment $k$ with length $l \geq 2L$, the primitive polynomial can be determined \cite[pp. 124-125]{Massey.1969}. With this information, the used LFSR can be recreated and the full keystream can be acquired \cite[p. 232]{Smart.2016}. Hence, the linear complexity is directly connected to the required keystream sequence to crack a stream cipher. \\
 
-Exploiting a known-plaintext attack, a finite sequence of the keystream can be obtained. This sequence can be used as input for the Berlekamp-Massey algorithm to try to recreate the LFSR generating the full period of the keystream \cite[p. 232]{Smart.2016}. The algorithm has an efficient linear run time of $O(n)$ for a sequence with length $n$. Its structure is displayed in Figure \ref{fig:berlekamp-massey}.  \\
+After obtaining a finite keystream snippet $k$ by for example exploiting a known plaintext attack, it can be used as the input for the Berlekamp-Massey algorithm. The algorithm has an efficient linear run time of $O(n)$ for a sequence with length $n$. Its structure is displayed in Figure \ref{fig:berlekamp-massey}.  \\
 
 \begin{figure}[ht]
 	
 	\[\begin{array}{lll}
-		& s &= (s_0, s_1, ..., s_n) \in \mathbb{F}_2 := \text{keystream sequence of the LFSR and input for the algorithm}\\
+		& k &= (k_0, k_1, ..., k_n) \in \mathbb{F}_2 := \text{keystream sequence of the LFSR and input for the algorithm}\\
 		& n &:= \text{length of the input sequence}\\
 		& i &:= \text{current index of the input sequence}\\
 		& i' &:= \text{previous index since the last increment of the linear complexity}\\
@@ -85,13 +81,13 @@ Exploiting a known-plaintext attack, a finite sequence of the keystream can be o
 	\end{array}\]
 	
 	\[\begin{array}{ll}
-		&\text{\textbf{Berlekamp-Massey}}(s): \vspace{0,1cm}\\
-		&\qquad n = |s| \\
+		&\text{\textbf{Berlekamp-Massey}}(k): \vspace{0,1cm}\\
+		&\qquad n = |k| \\
 		&\qquad C(x) = B(x) = 1\\
 		&\qquad L = i = 0 \\
 		&\qquad i' = -1 \\
 		&\qquad \text{while }i < n: \\
-		&\qquad\qquad d = s_i \oplus c_1s_{i-1} \oplus c_2s_{i-2} \oplus ... \oplus c_Ls_{i-L} \\
+		&\qquad\qquad d = k_i \oplus c_1k_{i-1} \oplus c_2k_{i-2} \oplus ... \oplus c_Lk_{i-L} \\
 		&\qquad\qquad \text{if }d == 1: \\
 		&\qquad\qquad\qquad C_{tmp}(x) = C(x) \\
 		&\qquad\qquad\qquad C(x) = C(x) + (B(x) * x^{i-i'}) \\
@@ -108,7 +104,7 @@ Exploiting a known-plaintext attack, a finite sequence of the keystream can be o
 
 \clearpage
 
-As a demonstration, the LFSR in Figure \ref{fig:Figure_8} with characteristic polynomial $G(x) = 1+x+x^4$ is uniquely determined by inputting its bit sequence into the Berlekamp-Massey algorithm. A characteristic polynomial $G(x)$ and connection polynomial $C(x)$ both represent the structure of an LFSR. However, they differ in their written mathematical form. The formula $G(x) = x^L * C(\frac{1}{x})$ describes their relation to each other. The expected output for the demonstration can be calculated by reversing the above equation, resulting in $C(x) = 1+x^3+x^4$. As input, the six-bit deciphered keystream $s=110001$ is used which corresponds to the initial state $s_{12}=12_{(10)}=1100$ of the LFSR. The state and action of each iteration of the loop over the input sequence are presented in Figure \ref{fig:execution-berlekamp-massey}. \\ 
+As a demonstration, the LFSR in Figure \ref{fig:Figure_8} with a characteristic polynomial $G(x) = 1+x+x^4$ is uniquely determined by inputting its bit sequence into the Berlekamp-Massey algorithm. A characteristic polynomial $G(x)$ and connection polynomial $C(x)$ both represent the structure of an LFSR. However, they differ in their written mathematical form. The formula $G(x) = x^L * C(\frac{1}{x})$ describes their relation to each other. The expected output for the demonstration can be calculated by reversing the above equation, resulting in $C(x) = 1+x^3+x^4$. As input, the six-bit deciphered keystream $k=110001$ is used which corresponds to the initial state $IV_{12}=12_{(10)}=1100$ of the LFSR. The state and action of each iteration of the loop over the input sequence are presented in Figure \ref{fig:execution-berlekamp-massey}. \\ 
 
 \begin{figure}[h]
 	\bgroup
@@ -117,7 +113,7 @@ As a demonstration, the LFSR in Figure \ref{fig:Figure_8} with characteristic po
 		\hline
 		\multicolumn{2}{|l|}{\text{Current values of attributes}} & \multicolumn{2}{l|}{\text{Resulting attribute assignments}}  \\
 		\hline
-		\text{Input: \space} s=110001 & $n=6$ &&\\
+		\text{Input: \space} k=110001 & $n=6$ &&\\
 		\hline
 		i = 0 \quad i'=-1 \quad & $L=0$ & $d$ & $\leftarrow 1$  \\
 		C(x) = 1 & $B(x) = 1 $ & C(x) & $\leftarrow  1 + 1 * x^1 = 1+x$ \\
@@ -149,15 +145,15 @@ As a demonstration, the LFSR in Figure \ref{fig:Figure_8} with characteristic po
 	\label{fig:execution-berlekamp-massey}
 \end{figure}
 
-To again validate the gained connection polynomial, it is inserted into the equation $G(x) = x^L * C(\frac{1}{x}) = x^4 * (1 + \frac{1}{x^3} + \frac{1}{x^4}) = x^4 + x + 1$. The expected output was indeed computed correctly by the algorithm after six iterations. In the example, the adversary knew only six bits and recreated the LFSR successfully. In this case, she would have required at most $2*L=2*4=8$ bits for the algorithm to determine the correct connection polynomial. This can also be achieved with an equation as long as the length of the LFSR is known. To calculate which memory cell $c_i$ is tapped, the following formula can be used \cite[p. 232]{Smart.2016}:
+To validate the gained connection polynomial, it is inserted into the equation $G(x) = x^L * C(\frac{1}{x}) = x^4 * (1 + \frac{1}{x^3} + \frac{1}{x^4}) = x^4 + x + 1$. The expected output was indeed computed correctly by the algorithm after six iterations. In the example, the adversary knew only six bits and recreated the LFSR successfully. In this case, she would have required at most $2*L=2*4=8$ bits for the algorithm to determine the correct connection polynomial. This can also be achieved with an equation as long as the length of the LFSR is known. To calculate which memory cells $c_i$ are tapped, the following formula can be used \cite[p. 232]{Smart.2016}:
 
 \[
 	\begin{pmatrix}
-		s_{L-1} & s_{L-2} & ... & s_1 & s_0 \\
-		s_L & s_{L-1} & ... & s_2 & s_1 \\
+		k_{L-1} & k_{L-2} & ... & k_1 & k_0 \\
+		k_L & k_{L-1} & ... & k_2 & k_1 \\
 		... & ... & ... & ... & ... \\
-		s_{2L-3} & s_{2L-4} & ... & s_{L-1} & s_{L-2} \\
-		s_{2L-2} & s_{2L-3} & ... & s_L & s_{L-1} \\
+		k_{2L-3} & k_{2L-4} & ... & k_{L-1} & k_{L-2} \\
+		k_{2L-2} & k_{2L-3} & ... & k_L & k_{L-1} \\
 	\end{pmatrix} *
 	\begin{pmatrix}
 		c_1 \\
@@ -167,12 +163,12 @@ To again validate the gained connection polynomial, it is inserted into the equa
 		c_{L} \\
 	\end{pmatrix} =
 	\begin{pmatrix}
-		s_{L} \\
-		s_{L+1} \\
+		k_{L} \\
+		k_{L+1} \\
 		... \\
-		s_{2L-2} \\
-		s_{2L-1} \\
+		k_{2L-2} \\
+		k_{2L-1} \\
 	\end{pmatrix}
 \]\\
 
-Since the degree of a primitive polynomial is equal to its linear complexity, even for an LFSR with a period of $2^{512}-1$ only 1024 bits of the keystream are required to crack the stream cipher. Thus pure LFSRs are of no value as cryptographic tools due to their linear behavior \cite[p. 231]{Smart.2016}.
+Since the degree of a primitive polynomial is equal to its linear complexity, even for an LFSR with a period of $2^{512}-1$ bits already 1024 bits of the keystream are sufficient to crack the stream cipher. Thus, pure LFSRs are of no value as cryptographic tools due to their linear behavior \cite[p. 231]{Smart.2016}.
