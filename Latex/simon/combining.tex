@@ -16,6 +16,7 @@ Another solution is to combine the $n$ output bits of multiple LFSRs based on a 
 	\includesvg[width=0.8\textwidth]{simon/img/output-selection.svg}
 	\caption{Graphic representation of a Geffe generator}
 	\label{fig:output-selection}
+	\vspace{0.3cm}
 \end{figure}
 
 \newpage
@@ -26,7 +27,7 @@ This results in the following changes to the cryptographic metrics of its keystr
 	\text{Linear Complexity }L_k &= \quad L_A + (L_A*L_C) + (L_B*L_C) \\
 	\text{Period }r_k &= \quad (2^{L_A} - 1)*(2^{L_B} - 1)*(2^{L_C} - 1) \\
 \end{array}\]
-
+\vspace{0.2cm}
 
 The increase in linear complexity and period improves the quality of the stream cipher. However, the Geffe generator has a statistical weakness that can be exploited. To prove this statement, its truth table is created in Figure \ref{fig:geffe-truth-table}. \\
 
@@ -55,8 +56,8 @@ The increase in linear complexity and period improves the quality of the stream 
 	\end{tabular}
 	\caption{Truth table of a Geffe generator}
 	\label{fig:geffe-truth-table}
+	\vspace{0.3cm}
 \end{figure}
-
 
 It can be deducted, that an output bit $k_i$ has the probability $\space p=\frac{3}{4} \space$ of being equal to the bit $a_i$ of LFSR A. The same can be seen for LFSR B. Consequently, the Geffe generator can be easily broken with a \emph{correlation attack} \cite[p. 104]{Pommerening.2000}. \\ 
 

@@ -20,7 +20,7 @@ In cryptanalysis, attacks can be categorized based on the data available to the 
 	\label{fig:known-plaintext}
 \end{figure}
 
-If the period of a keystream is shorter than the gained segment of its plaintext, then the rest of the message can be decrypted \cite[p. 9]{Rueppel.1986}. Therefore, a large period is necessary to diminish this threat \cite[p. 83]{Stamp.2007}. Even if it is not possible for the adversary to recreate the complete keystream period, the original data $p$ can be replaced by malicious content $p'$ of the same length. This is also known as a bit-flipping attack \cite[p. 6]{graves2010ceh}. To visualize such an attack, it is assumed that the position of the plaintext '10.000€' and its corresponding encrypted message $s$ is known. The first digit is now replaced by a '9' in Figure \ref{fig:text-replacment}. This is a clear security concern.
+If the period of a keystream is shorter than the gained segment of its plaintext, the rest of the message can be decrypted \cite[p. 9]{Rueppel.1986}. Therefore, a large period is necessary to diminish this threat \cite[p. 83]{Stamp.2007}. Even if it is not possible for the adversary to recreate the complete keystream period, the original data $p$ can be replaced by malicious content $p'$ of the same length. This is also known as a bit-flipping attack \cite[p. 6]{graves2010ceh}. To visualize such an attack, it is assumed that the position of the plaintext '10.000€' and its corresponding encrypted message $s$ is known. The first digit is now replaced by a '9' in Figure \ref{fig:text-replacment}. This is a clear security concern.
 
 \begin{figure}[htpb]
 	\[\begin{array}{ll}
