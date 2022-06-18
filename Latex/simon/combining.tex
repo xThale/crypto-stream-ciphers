@@ -3,7 +3,7 @@
 
 In an attempt to increase the security of LFSRs, several adjustments to their basic structure can be made \cite[p. 97]{Pommerening.2000}. The so far discussed exploits mainly abuse their linear nature. Therefore, LFSRs can be combined with nonlinear transformations, for example, the multiplication of two bits by an AND function, to diminish their weak points. In this section, a few concepts based on this idea are analyzed.
 
-\subsection{Nonlinear Feedback Shift Registers (NLFSR)}
+\subsection{Nonlinear Feedback Shift Registers (NLFSR)}\label{NLFSR}
 
 Instead of combining the tapped cells linearly, NLFSRs utilize a \emph{nonlinear connection polynomial}. This approach seems secure since there are $2^{2^n}$ possible Boolean functions for $n$ bits. However, it is mathematically proven that every bit of a keystream with period $r$ can be correctly determined after at most $r$ bits. For example, the algorithm by Boyar and Krawczyk recursively computes the whole keystream after $n+m$ bits of plaintext, where $n$ is the length of the NLFSR and $m$ is the number of degrees of freedom of the feedback function. The required plaintext is generally much smaller than the period of the NLFSRs. This is an improvement in comparison to LFSRs, however still not secure enough to be considered a safe encryption method on their own \cite[p. 97]{Pommerening.2000}. There are even further restrictions that keep reducing their cryptographic value. For example, to still guarantee the effective calculation of the nonlinear function, the amount of tapped cells is limited to a realistic sum. \cite{Pommerening.2015} Consequently, the concept of NLFSRs is not further discussed in this paper.  \\
 
