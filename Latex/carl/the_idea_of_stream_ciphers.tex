@@ -2,7 +2,7 @@
 
 Stream ciphers are one of two major symmetric encryption methods. They serve a different purpose than block ciphers, the second symmetric encryption method. The primary intent is to encrypt and decrypt messages approximately synchronously between the sender and receiver of a message. To achieve this, the message is not first divided into blocks and pre-processed before it is ciphered, as is the case with block ciphers. Instead, stream ciphers encrypt or decrypt the plaintext or ciphertext directly. \cite[p. 223]{Schneier.2006} \\
 
-A prerequisite for this is a theoretically infinite, ideally true binary random sequence. To encrypt the data, the sender combines the plaintext bitwise exclusive-or (XOR) with the random sequence. The recipient decrypts the ciphertext by also combining it bitwise exclusive-or with the same random sequence used by the sender.
+A prerequisite for this is a theoretically infinite, ideally truly random binary sequence. To encrypt the data, the sender combines the plaintext bitwise exclusive-or (XOR) with the random sequence. The recipient decrypts the ciphertext by also combining it bitwise exclusive-or with the same random sequence used by the sender.
 \begin{figure}[h]
 	\centering
 	\includesvg[inkscapelatex=false, width=1\textwidth]{carl/figures/figure_1_new.svg}
@@ -17,7 +17,7 @@ This can be described using an analogy to a Laplacean experiment, like the seque
 
 \pagebreak
 
-The real question is in fact: Can a computer generate numbers that only look truly random? Due to the determinism of a PC, which can be represented as a finite state machine, truly random numbers can never be generated. It is only possible to generate deterministic, so-called \textit{pseudorandom numbers} (PRN). After the input of one or more initialization numbers, a \textit{pseudorandom number generator} (PRNG) generates this pseudorandom number sequence. A deterministic inner state is used for this purpose. \cite[pp. 195-196]{Ertel.2020} In the following chapters it will be shown that a stream cipher can be interpreted as a PRNG according to these criteria. As can be seen in Figure 1, a stream cipher has this inner state of the PRNG. Initially, it is filled by the short key that both communication partners possess. A stream cipher uses the key to generate and output the pseudorandom \textit{keystream} or \textit{running-key} bitwise or bytewise. \cite[p. 233]{Schneier.2006} \\
+The real question is in fact: Can a computer generate numbers that only look truly random? Due to the determinism of a PC, which can be represented as a finite state machine, truly random numbers can never be generated. It is only possible to generate deterministic, so-called \textit{pseudorandom numbers} (PRN). After the input of one or more initialization numbers, a \textit{pseudorandom number generator} (PRNG) generates this pseudorandom number sequence. A deterministic inner state is used for this purpose. \cite[pp. 195-196]{Ertel.2020} In the following chapters it will be shown that a stream cipher can be interpreted as a PRNG according to these criteria. As can be seen in Figure \ref{fig:Figure_2}, a stream cipher has this inner state of the PRNG. Initially, it is filled by the short key that both communication partners possess. A stream cipher uses the key to generate and output the pseudorandom \textit{keystream} or \textit{running-key} bitwise or bytewise. \cite[p. 233]{Schneier.2006} \\
 
 \begin{figure}[h]
 	\centering
